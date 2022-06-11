@@ -85,34 +85,22 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
+                                        <th> </th>
                                         <th>Email</th>
                                         <th>Endereço</th>
                                         <th>Telefone</th>
                                         <th>Ações</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Thomas Hardy</td>
-                                        <td>thomashardy@mail.com</td>
-                                        <td>89 Chiaroscuro Rd, Portland, USA</td>
-                                        <td>(171) 555-2222</td>
-                                        <td>
-                                            <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
-                                                    class="material-icons" data-toggle="tooltip"
-                                                    title="Edit">&#xE254;</i></a>
-                                            <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i
-                                                    class="material-icons" data-toggle="tooltip"
-                                                    title="Delete">&#xE872;</i></a>
-                                        </td>
-                                    </tr>
+                                <tbody id="table-content">
+
                                 </tbody>
                             </table>
 
                         </div>
                     </div>
                 </div>
-                <!-- Edit Modal HTML -->
+                <!-- Add Modal HTML -->
                 <div id="addEmployeeModal" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -125,20 +113,20 @@
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <label>Name</label>
-                                        <input type="text" class="form-control" id="name">
+                                        <input type="text" class="form-control" id="name-create">
                                     </div>
                                     <div class="form-group">
                                         <label>Email</label>
-                                        <input type="email" class="form-control" id="email">
+                                        <input type="email" class="form-control" id="email-create">
                                     </div>
                                     <div class="form-group">
                                         <label>Address</label>
-                                        <textarea class="form-control" id="address"></textarea>
+                                        <textarea class="form-control" id="address-create"></textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                                    <input type="submit" class="btn btn-success" value="Add">
+                                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                                    <input type="submit" class="btn btn-success" value="Criar" onclick="create()">
                                 </div>
                             </form>
                         </div>
@@ -150,27 +138,27 @@
                         <div class="modal-content">
                             <form>
                                 <div class="modal-header">
-                                    <h4 class="modal-title">Edit Employee</h4>
+                                    <h4 class="modal-title">Editar Relatório</h4>
                                     <button type="button" class="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <label>Name</label>
-                                        <input type="text" class="form-control" required>
+                                        <input type="text" class="form-control" id="name-edit">
                                     </div>
                                     <div class="form-group">
                                         <label>Email</label>
-                                        <input type="email" class="form-control" required>
+                                        <input type="email" class="form-control" id="email-edit">
                                     </div>
                                     <div class="form-group">
-                                        <label>Address</label>
-                                        <textarea class="form-control" required></textarea>
+                                        <label>Endereço</label>
+                                        <textarea class="form-control" id="address-edit"></textarea>
                                     </div>
-                                    <div class="form-group">
+                                    <!-- <div class="form-group">
                                         <label>Phone</label>
-                                        <input type="text" class="form-control" required>
-                                    </div>
+                                        <input type="text" class="form-control" required >
+                                    </div> -->
                                 </div>
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
@@ -216,11 +204,13 @@
 
     </div>
     <script>
-        const getLocalStorage = () => JSON.parse(localStorage.getItem('users')) ?? []
-        const setLocalStorage = (users) => localStorage.setItem("users", JSON.stringify(users))
+        const getLocalStorage = () => JSON.parse(localStorage.getItem('reports')) ?? []
+        const setLocalStorage = (reports) => localStorage.setItem("reports", JSON.stringify(reports))
+
+        const readReports = () => getLocalStorage()
 
         const loggedIn = localStorage.getItem('session')
-        console.log(loggedIn)
+
         if (loggedIn === "false") {
             const application = document.querySelectorAll('#application')
             application.forEach(application => application.parentNode.removeChild(application))
@@ -229,6 +219,79 @@
             notLoggedIn.innerHTML = `<a class="notLoggedIn" href="./login.html"> Clique aqui e faça o login </a>`
 
             document.querySelector('body').appendChild(notLoggedIn)
+        }
+
+        function create() {
+            const id = Math.random() * 1000
+            const name = document.getElementById("name-create").value
+            const email = document.getElementById("email-create").value
+            const address = document.getElementById("address-create").value
+
+            const reportInfo = {
+                id,
+                name,
+                email,
+                address
+            }
+
+            const reports = getLocalStorage()
+            reports.push(reportInfo)
+            setLocalStorage(reports)
+        }
+
+        const createCard = (report) => {
+
+            const newCard = document.createElement('tr')
+            newCard.innerHTML = `
+            <td>${report.name}</td>
+            <td></td>
+            <td>${report.email}</td>
+            <td>${report.address}</td>
+            <td>(171) 555-2222</td>
+            <td>
+               <a href="#editEmployeeModal" class="edit" data-toggle="modal" onclick="editProduct(event)"><i
+                        id="${report.id}" 
+                        class="material-icons" data-toggle="tooltip"
+                        title="Edit">&#xE254;</i>
+                </a>
+                <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i
+                        class="material-icons" data-toggle="tooltip"
+                        title="Delete">&#xE872;</i></a>
+            </td>
+            
+            `
+            document.querySelector('#table-content').appendChild(newCard)
+        }
+
+        const listProducts = () => {
+            const reports = readReports()
+            //clear();
+
+            reports.forEach(createCard)
+        }
+
+        listProducts()
+
+        const editProduct = async (event) => {
+            const index = event.target;
+            const id = index.id
+
+            const reports = readReports()
+
+            const report = reports.map(report => {
+                if (report.id == id) {
+                    return report
+                }
+            })
+
+            await fillFields(report[0])
+        }
+
+        const fillFields = (report) => {
+            //const index = report.index;
+            const name = document.getElementById("name-edit").value = report.name
+            const email = document.getElementById("email-edit").value = report.email
+            const address = document.getElementById("address-edit").value = report.address
         }
 
         function logOut() {
