@@ -95,8 +95,10 @@
             const users = readUser()
 
             users.forEach(user => {
+                const loggedIn = true
                 if (user.email === email && user.password === password) {
-                    return window.location.href = "index.html"
+                    localStorage.setItem("session", loggedIn)
+                    window.location.href = "index.html"
                 }
             })
 
