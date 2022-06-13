@@ -94,17 +94,20 @@
 
             const users = readUser()
 
+            const loggedIn = false
+
             users.forEach(user => {
-                const loggedIn = true
                 if (user.email === email && user.password === password) {
+                    const loggedIn = true
                     localStorage.setItem("session", loggedIn)
-                    window.location.href = "index.html"
+                    return window.location.href = "index.html"
                 }
             })
 
-            const warning = document.createElement('div')
-            warning.classList.add("remove");
-            warning.innerHTML = `
+            if (loggedIn === false) {
+                const warning = document.createElement('div')
+                warning.classList.add("remove");
+                warning.innerHTML = `
                     <hr class="mx-n3">
                         <div class="text-center">
                         <h5 class="text-danger">
@@ -113,14 +116,15 @@
                     </div>
                     `
 
-            if (document.querySelector('.remove')) {
+                if (document.querySelector('.remove')) {
 
-                const warningDiv = document.querySelectorAll('.remove')
-                warningDiv.forEach(warningDiv => warningDiv.parentNode.removeChild(warningDiv))
+                    const warningDiv = document.querySelectorAll('.remove')
+                    warningDiv.forEach(warningDiv => warningDiv.parentNode.removeChild(warningDiv))
 
+                }
+
+                document.querySelector('#warning').appendChild(warning)
             }
-
-            document.querySelector('#warning').appendChild(warning)
         }
 
     </script>
