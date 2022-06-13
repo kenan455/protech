@@ -94,7 +94,7 @@
 
             const users = readUser()
 
-            const loggedIn = false
+
 
             users.forEach(user => {
                 if (user.email === email && user.password === password) {
@@ -104,7 +104,9 @@
                 }
             })
 
-            if (loggedIn === false) {
+            const loggedIn = localStorage.getItem('session')
+
+            if (loggedIn === "false") {
                 const warning = document.createElement('div')
                 warning.classList.add("remove");
                 warning.innerHTML = `
