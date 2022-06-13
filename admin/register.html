@@ -21,10 +21,27 @@
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-xl-9">
 
-                    <h1 class="text-white mb-4">Login</h1>
+                    <h1 class="text-white mb-4">Registre-se Como Administrador</h1>
 
                     <div class="card" style="border-radius: 15px;">
                         <div class="card-body">
+
+                            <div class="row align-items-center pt-4 pb-3">
+                                <div class="col-md-3 ps-5">
+
+                                    <h6 class="mb-0">Nome</h6>
+
+                                </div>
+                                <div class="col-md-9 pe-5">
+
+                                    <input type="text" class="form-control form-control-lg"
+                                        placeholder="Digite seu nome" id="name" required />
+
+                                </div>
+                            </div>
+
+                            <hr class="mx-n3">
+
                             <div class="row align-items-center py-3">
                                 <div class="col-md-3 ps-5">
 
@@ -55,23 +72,32 @@
                                 </div>
                             </div>
 
+                            <hr class="mx-n3">
+
+                            <div class="row align-items-center pt-4 pb-3">
+                                <div class="col-md-3 ps-5">
+
+                                    <h6 class="mb-0">Chave de acesso</h6>
+
+                                </div>
+                                <div class="col-md-9 pe-5">
+
+                                    <input type="password" class="form-control form-control-lg"
+                                        placeholder="&#9679; &#9679; &#9679; &#9679; &#9679;" id="accessKey" required />
+
+                                </div>
+                            </div>
+
+
                             <div id="warning">
 
                             </div>
 
                             <hr class="mx-n3">
 
-                            <div class=" text-center">
+                            <div class="px-5 py-4 text-center">
                                 <button type="submit" class="btn btn-primary btn-lg"
-                                    onClick="handleSubmit()">Entrar</button>
-                            </div>
-
-                            <div class="text-center pt-5">
-                                Ainda não tem conta?
-                            </div>
-
-                            <div class="pt-2 text-center">
-                                <a type="submit" class="btn btn-primary btn-lg" href="register.html">Registre-se</a>
+                                    onClick="handleSubmit()">Registrar</button>
                             </div>
 
                         </div>
@@ -89,31 +115,29 @@
         const readUser = () => getLocalStorage()
 
         function handleSubmit() {
+            const accountType = "administrador"
+            const name = document.getElementById("name").value
             const email = document.getElementById("email").value
             const password = document.getElementById("password").value
+            const accessKey = document.getElementById("accessKey").value
 
-            const users = readUser()
+            const userInfo = {
+                accountType,
+                name,
+                email,
+                password
+            }
 
-
-
-            users.forEach(user => {
-                if (user.email === email && user.password === password) {
-                    const loggedIn = true
-                    localStorage.setItem("session", loggedIn)
-                    return window.location.href = "index.html"
-                }
-            })
-
-            const loggedIn = localStorage.getItem('session')
-
-            if (loggedIn === "false") {
+            if (name && email && password && accessKey === "protechAdmin123") {
+                createUser(userInfo)
+            } else {
                 const warning = document.createElement('div')
                 warning.classList.add("remove");
                 warning.innerHTML = `
                     <hr class="mx-n3">
                         <div class="text-center">
                         <h5 class="text-danger">
-                            Email ou senha errado!
+                            Dados incorretos!
                         </h5>
                     </div>
                     `
@@ -127,8 +151,15 @@
 
                 document.querySelector('#warning').appendChild(warning)
             }
+
         }
 
+        function createUser(userInfo) {
+            const users = getLocalStorage()
+            users.push(userInfo)
+            setLocalStorage(users)
+            return window.location.href = "login.html"
+        }
     </script>
 </body>
 
