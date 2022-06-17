@@ -199,15 +199,8 @@
 
         const loggedIn = localStorage.getItem('session')
 
-        if (loggedIn === "false") {
+        if (loggedIn === "false" || accountType === "vigilante") {
             window.location.href = "login.html"
-            /* const application = document.querySelectorAll('#application')
-            application.forEach(application => application.parentNode.removeChild(application))
-
-            const notLoggedIn = document.createElement('div')
-            notLoggedIn.innerHTML = `<a class="notLoggedIn" href="./login.html"> Clique aqui e faça o login </a>`
-
-            document.querySelector('body').appendChild(notLoggedIn) */
         }
 
         async function create() {

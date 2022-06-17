@@ -46,6 +46,14 @@
                     </li>
                 </ul>
 
+                <span class="navbar-text mr-3" id="username-topbar">
+                </span>
+
+                <span class="navbar-text mr-3" id="user-photo" onClick="logOut()">
+                </span>
+
+
+
                 <span class="navbar-text" onClick="logOut()">
                     Sair
                 </span>
@@ -156,17 +164,17 @@
                         <div class="modal-content">
                             <form>
                                 <div class="modal-header">
-                                    <h4 class="modal-title">Delete Employee</h4>
+                                    <h4 class="modal-title">Deletar Relatório</h4>
                                     <button type="button" class="close" data-dismiss="modal"
                                         aria-hidden="true">&times;</button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Are you sure you want to delete these Records?</p>
-                                    <p class="text-warning"><small>This action cannot be undone.</small></p>
+                                    <p>Tem certeza que deseja deletar?</p>
+                                    <p class="text-warning"><small>Essa ação não pode ser desfeita.</small></p>
                                 </div>
                                 <div class="modal-footer">
-                                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                                    <input type="submit" class="btn btn-danger" value="Delete">
+                                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
+                                    <input type="submit" class="btn btn-danger" value="Deletar">
                                 </div>
                             </form>
                         </div>
@@ -196,7 +204,7 @@
         const loggedIn = localStorage.getItem('session')
         const accountType = localStorage.getItem('accountType')
 
-        if (loggedIn === "false"  || accountType === "vigilante") {
+        if (loggedIn === "false") {
             window.location.href = "login.html"
         }
 
@@ -258,8 +266,20 @@
             const getUserPhoto = users.map(user => {
 
                 if (user.email === vigilantEmail && user.vigilantPhoto) {
-                    console.log("teste")
+                    const userPhoto = document.createElement('div')
+                    userPhoto.innerHTML = `
+                       <img src="${user.vigilantPhoto}"/>
+                        
+                    `
+                    document.querySelector('#user-photo').appendChild(userPhoto)
+
+                    const userName = document.createElement('div')
+                    userName.innerHTML = `
+                      ${user.name}
+                    `
+                    document.querySelector('#username-topbar').appendChild(userName)
                 }
+
             })
 
             const reports = readReports()
