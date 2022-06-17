@@ -102,6 +102,7 @@
                     const accountType = user.accountType
                     localStorage.setItem("session", loggedIn)
                     localStorage.setItem("accountType", accountType)
+                    localStorage.setItem("username", user.name)
                     return window.location.href = "index.html"
                 }
             })

@@ -147,7 +147,7 @@
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
                                     <input type="submit" class="btn btn-info" value="Salvar" id="getIndex"
-                                        onclick="saveProduct(event)">
+                                        onclick="saveReport(event)">
                                 </div>
                             </form>
                         </div>
@@ -208,10 +208,10 @@
         }
 
         async function create() {
+            const vigilantName = localStorage.getItem('username')
             const id = Math.ceil(Math.random() * 1000)
             const distance = document.getElementById("distance-create").value
             const workedHours = document.getElementById("worked-hours-create").value
-            const vigilantName = "João"
 
             const reportInfo = {
                 id,
@@ -224,7 +224,7 @@
             reports.push(reportInfo)
             await setLocalStorage(reports)
 
-            listReports(id) 
+            listReports(id)
         }
 
         const createCard = (report) => {
@@ -253,9 +253,19 @@
             document.getElementById("getIdEdit").classList.add(report.id);
         }
 
-        const listReports = () => {
+        const listReports = async () => {
+            const vigilantName = await localStorage.getItem('username')
+         
             const reports = readReports()
-            reports.forEach(createCard)
+
+            const filteredUserReports = reports.map(report => {
+                
+                if(report.vigilantName === vigilantName){
+                    return report
+                }
+            })
+            
+            filteredUserReports.forEach(createCard)
         }
 
         listReports()
@@ -282,7 +292,7 @@
             const workedHours = document.getElementById("worked-hours-edit").value = report.workedHours
         }
 
-        const saveProduct = async () => {
+        const saveReport = async () => {
             const getIndex = document.getElementById("getIdEdit").className.split(' ')
             const id = getIndex[getIndex.length - 1]
 
