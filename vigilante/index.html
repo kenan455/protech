@@ -53,7 +53,7 @@
         </nav>
 
 
-        <div class="container pt-4">            
+        <div class="container pt-4">
             <div class="row">
 
                 <div class="container-xl">
@@ -186,26 +186,23 @@
 
     </div>
     <script>
+        const getUsers = () => JSON.parse(localStorage.getItem('users')) ?? []
         const getLocalStorage = () => JSON.parse(localStorage.getItem('reports')) ?? []
         const setLocalStorage = (reports) => localStorage.setItem("reports", JSON.stringify(reports))
 
+        const readUsers = () => getUsers()
         const readReports = () => getLocalStorage()
 
         const loggedIn = localStorage.getItem('session')
+        const accountType = localStorage.getItem('accountType')
 
-        if (loggedIn === "false") {
+        if (loggedIn === "false"  || accountType === "vigilante") {
             window.location.href = "login.html"
-            /* const application = document.querySelectorAll('#application')
-            application.forEach(application => application.parentNode.removeChild(application))
-
-            const notLoggedIn = document.createElement('div')
-            notLoggedIn.innerHTML = `<a class="notLoggedIn" href="./login.html"> Clique aqui e faça o login </a>`
-
-            document.querySelector('body').appendChild(notLoggedIn) */
         }
 
         async function create() {
             const vigilantName = localStorage.getItem('username')
+            const vigilantEmail = localStorage.getItem('email')
             const id = Math.ceil(Math.random() * 1000)
             const distance = document.getElementById("distance-create").value
             const workedHours = document.getElementById("worked-hours-create").value
@@ -215,7 +212,8 @@
                     id,
                     distance,
                     workedHours,
-                    vigilantName
+                    vigilantName,
+                    vigilantEmail
                 }
 
                 const reports = getLocalStorage()
@@ -253,17 +251,25 @@
         }
 
         const listReports = async () => {
-            const vigilantName = await localStorage.getItem('username')
+            const vigilantEmail = await localStorage.getItem('email')
+
+            const users = readUsers()
+
+            const getUserPhoto = users.map(user => {
+
+                if (user.email === vigilantEmail && user.vigilantPhoto) {
+                    console.log("teste")
+                }
+            })
 
             const reports = readReports()
 
             const filteredUserReports = reports.map(report => {
-
-                if (report.vigilantName === vigilantName) {
+                if (report.vigilantEmail === vigilantEmail) {
                     return report
                 }
             })
-
+            setLocalStorage(filteredUserReports)
             filteredUserReports.forEach(createCard)
         }
 

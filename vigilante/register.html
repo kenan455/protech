@@ -24,67 +24,97 @@
                     <h1 class="text-white mb-4">Registre-se</h1>
 
                     <div class="card" style="border-radius: 15px;">
-                        <div class="card-body">
 
-                            <div class="row align-items-center pt-4 pb-3">
-                                <div class="col-md-3 ps-5">
 
-                                    <h6 class="mb-0">Nome</h6>
-
-                                </div>
-                                <div class="col-md-9 pe-5">
-
-                                    <input type="text" class="form-control form-control-lg"
-                                        placeholder="Digite seu nome" id="name" required />
-
-                                </div>
+                        <div class="row align-items-center pt-4 pb-3">
+                            <div class="col-md-3 ps-5">
+                                <label for="" class="text-center fontAdjustment">Foto do produto</label>
                             </div>
+                            
+                            <div class="col-md-9 pe-5">
 
-                            <hr class="mx-n3">
+                                <div class="input-group mt-3 bg-white shadow-sm">
 
-                            <div class="row align-items-center py-3">
-                                <div class="col-md-3 ps-5">
-
-                                    <h6 class="mb-0">Email</h6>
-
+                                    <input id="upload" type="file" onchange="handleSubmitPhoto(this);"
+                                        class="form-control border-0" name="arquivo" name="myFileInput">
+                                
+                                    <div class="input-group-append">
+                                        <label for="upload" class="btn btn-primary text-white m-0 rounded-pill px-4">
+                                            <small class="text-uppercase font-weight-bold ">Escolha o arquivo</small>
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="col-md-9 pe-5">
 
-                                    <input type="email" class="form-control form-control-lg"
-                                        placeholder="exemplo@exemplo.com" id="email" required />
-
+                                <div class="image-area mt-4 mb-3">
+                                    <img id="imageResult" width="150" height="150" src="#" alt=""
+                                        class="img-fluid rounded shadow-sm mx-auto d-none">
                                 </div>
+
                             </div>
-
-                            <hr class="mx-n3">
-
-                            <div class="row align-items-center pt-4 pb-3">
-                                <div class="col-md-3 ps-5">
-
-                                    <h6 class="mb-0">Senha</h6>
-
-                                </div>
-                                <div class="col-md-9 pe-5">
-
-                                    <input type="password" class="form-control form-control-lg"
-                                        placeholder="&#9679; &#9679; &#9679; &#9679; &#9679;" id="password" required />
-
-                                </div>
-                            </div>
-
-
-                            <hr class="mx-n3">
-
-                            <div class="px-5 py-4 text-center">
-                                <button type="submit" class="btn btn-primary btn-lg"
-                                    onClick="handleSubmit()">Registrar</button>
-                            </div>
-
                         </div>
-                    </div>
 
+
+                        <hr class="mx-n3">
+
+                        <div class="row align-items-center pt-4 pb-3">
+                            <div class="col-md-3 ps-5">
+
+                                <h6 class="mb-0">Nome</h6>
+
+                            </div>
+                            <div class="col-md-9 pe-5">
+
+                                <input type="text" class="form-control form-control-lg" placeholder="Digite seu nome"
+                                    id="name" required />
+
+                            </div>
+                        </div>
+
+                        <hr class="mx-n3">
+
+                        <div class="row align-items-center py-3">
+                            <div class="col-md-3 ps-5">
+
+                                <h6 class="mb-0">Email</h6>
+
+                            </div>
+                            <div class="col-md-9 pe-5">
+
+                                <input type="email" class="form-control form-control-lg"
+                                    placeholder="exemplo@exemplo.com" id="email" required />
+
+                            </div>
+                        </div>
+
+                        <hr class="mx-n3">
+
+                        <div class="row align-items-center pt-4 pb-3">
+                            <div class="col-md-3 ps-5">
+
+                                <h6 class="mb-0">Senha</h6>
+
+                            </div>
+                            <div class="col-md-9 pe-5">
+
+                                <input type="password" class="form-control form-control-lg"
+                                    placeholder="&#9679; &#9679; &#9679; &#9679; &#9679;" id="password" required />
+
+                            </div>
+                        </div>
+
+
+                        <hr class="mx-n3">
+
+                        <div class="px-5 py-4 text-center">
+                            <button type="submit" class="btn btn-primary btn-lg"
+                                onClick="handleSubmit()">Registrar</button>
+                        </div>
+
+                    </div>
                 </div>
+
             </div>
+        </div>
         </div>
     </section>
 
@@ -99,18 +129,21 @@
             const name = document.getElementById("name").value
             const email = document.getElementById("email").value
             const password = document.getElementById("password").value
+            const vigilantPhoto = localStorage.getItem("vigilantPhoto")
 
             const userInfo = {
                 accountType,
                 name,
                 email,
-                password
+                password,
+                vigilantPhoto
             }
 
             if (name && email && password) {
                 createUser(userInfo)
             }
 
+            localStorage.removeItem("vigilantPhoto")
         }
 
         function createUser(userInfo) {
@@ -118,6 +151,41 @@
             users.push(userInfo)
             setLocalStorage(users)
             return window.location.href = "login.html"
+        }
+    </script>
+
+    <script type="text/javascript">
+        function handleSubmitPhoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imageResult')
+                        .attr('src', e.target.result);
+                };
+
+                reader.addEventListener("load", () => {
+                    localStorage.setItem("vigilantPhoto", reader.result)
+                });
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $(function () {
+            $('#upload').on('change', function () {
+                handleSubmitPhoto(input);
+                $("#imageResult").removeClass('d-none');
+                $("#imageResult").addClass('d-block');
+            });
+        });
+
+
+        const input = document.getElementById('upload');
+        const infoArea = document.getElementById('upload-label');
+        input.addEventListener('change', showFileName);
+        function showFileName(event) {
+            const input = event.srcElement;
+            const fileName = input.files[0].name;
+            infoArea.textContent = 'Nome do arquivo: ' + fileName;
         }
     </script>
 </body>
