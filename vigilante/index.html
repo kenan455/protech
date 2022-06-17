@@ -77,7 +77,7 @@
                                         <th> </th>
                                         <th> </th>
                                         <th> </th>
-                                        <th>Distancia Percorrida</th>
+                                        <th>Distância Percorrida(km)</th>
                                         <th>Horas Trabalhadas</th>
 
                                         <th>Ações</th>
@@ -103,12 +103,12 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <label>Distância percorrida</label>
-                                        <input type="text" class="form-control" id="distance-create">
+                                        <label>Distância percorrida(km)</label>
+                                        <input type="text" class="form-control" id="distance-create" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Horas Trabalhadas</label>
-                                        <input type="text" class="form-control" id="worked-hours-create">
+                                        <input type="time" class="form-control" id="worked-hours-create" required>
                                     </div>
 
                                 </div>
@@ -132,17 +132,14 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <label>Distância Percorrida</label>
-                                        <input type="text" class="form-control" id="distance-edit">
+                                        <label>Distância Percorrida(km)</label>
+                                        <input type="text" class="form-control" id="distance-edit" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Horas Trabalhadas</label>
-                                        <input type="text" class="form-control" id="worked-hours-edit">
+                                        <input type="time" class="form-control" id="worked-hours-edit" required>
                                     </div>
-                                    <!-- <div class="form-group">
-                                        <label>Phone</label>
-                                        <input type="text" class="form-control" required >
-                                    </div> -->
+
                                 </div>
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
@@ -213,18 +210,20 @@
             const distance = document.getElementById("distance-create").value
             const workedHours = document.getElementById("worked-hours-create").value
 
-            const reportInfo = {
-                id,
-                distance,
-                workedHours,
-                vigilantName
+            if (distance && workedHours) {
+                const reportInfo = {
+                    id,
+                    distance,
+                    workedHours,
+                    vigilantName
+                }
+
+                const reports = getLocalStorage()
+                reports.push(reportInfo)
+                await setLocalStorage(reports)
+
+                listReports(id)
             }
-
-            const reports = getLocalStorage()
-            reports.push(reportInfo)
-            await setLocalStorage(reports)
-
-            listReports(id)
         }
 
         const createCard = (report) => {
@@ -235,8 +234,8 @@
             <td></td>
             <td></td>
             <td></td> 
-            <td>${report.distance}</td>
-            <td>${report.workedHours}</td>
+            <td>${report.distance}/km</td>
+            <td>${report.workedHours}/hrs</td>
             <td>
                <a href="#editEmployeeModal" class="edit" data-toggle="modal" onclick="editReport()"><i
                         id="getIdEdit" 
@@ -255,16 +254,16 @@
 
         const listReports = async () => {
             const vigilantName = await localStorage.getItem('username')
-         
+
             const reports = readReports()
 
             const filteredUserReports = reports.map(report => {
-                
-                if(report.vigilantName === vigilantName){
+
+                if (report.vigilantName === vigilantName) {
                     return report
                 }
             })
-            
+
             filteredUserReports.forEach(createCard)
         }
 
@@ -299,24 +298,26 @@
             const distance = document.getElementById("distance-edit").value
             const workedHours = document.getElementById("worked-hours-edit").value
 
-            const reportInfoEdit = {
-                distance,
-                workedHours,
-            }
-
-            const reports = readReports()
-
-            const report = reports.map(report => {
-                if (report.id == id) {
-                    report.distance = reportInfoEdit.distance
-                    report.workedHours = reportInfoEdit.workedHours
+            if (distance && workedHours) {
+                const reportInfoEdit = {
+                    distance,
+                    workedHours,
                 }
-                return report
-            })
+
+                const reports = readReports()
+
+                const report = reports.map(report => {
+                    if (report.id == id) {
+                        report.distance = reportInfoEdit.distance
+                        report.workedHours = reportInfoEdit.workedHours
+                    }
+                    return report
+                })
 
 
-            await setLocalStorage(report)
-            listReports()
+                await setLocalStorage(report)
+                listReports()
+            }
         }
 
 
