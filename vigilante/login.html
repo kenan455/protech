@@ -25,7 +25,7 @@
 
     <section>
         <nav class="navbar navbar-expand-lg navbar-dark">
-            <a class="navbar-brand titleNavbar" href="./login.html">ProTech</a>
+            <a class="navbar-brand titleNavbar" href="../index.html">ProTech</a>
         </nav>
 
         <div class="container h-200">
@@ -105,8 +105,6 @@
 
             const users = readUser()
 
-
-
             users.forEach(user => {
                 if (user.email === email && user.password === password) {
                     const loggedIn = true
@@ -121,7 +119,7 @@
 
             const loggedIn = localStorage.getItem('session')
 
-            if (loggedIn === "false") {
+            if (loggedIn === "false" || loggedIn === null) {
                 const warning = document.createElement('div')
                 warning.classList.add("remove");
                 warning.innerHTML = `

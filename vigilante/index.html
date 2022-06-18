@@ -122,7 +122,7 @@
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <label>Distância percorrida(km)</label>
-                                        <input type="text" class="form-control" id="distance-create" required>
+                                        <input type="number" class="form-control" id="distance-create" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Horas Trabalhadas</label>
@@ -205,6 +205,13 @@
 
     </div>
     <script>
+        const loggedIn = localStorage.getItem('session')
+        const accountType = localStorage.getItem('accountType')
+
+        if (loggedIn === "false" || loggedIn === null) {
+            window.location.href = "login.html"
+        }
+
         const getUsers = () => JSON.parse(localStorage.getItem('users')) ?? []
         const getLocalStorage = () => JSON.parse(localStorage.getItem('reports')) ?? []
         const setLocalStorage = (reports) => localStorage.setItem("reports", JSON.stringify(reports))
@@ -212,19 +219,12 @@
         const readUsers = () => getUsers()
         const readReports = () => getLocalStorage()
 
-        const loggedIn = localStorage.getItem('session')
-        const accountType = localStorage.getItem('accountType')
-
-        if (loggedIn === "false") {
-            window.location.href = "login.html"
-        }
-
         async function fillVigilantPhoto() {
             const vigilantEmail = await localStorage.getItem('email')
 
             const users = readUsers()
 
-            const getUserPhoto = users.map(user => {
+            const getUserPhoto = users.forEach(user => {
 
                 if (user.email === vigilantEmail && user.vigilantPhoto) {
                     const userPhoto = document.createElement('div')
@@ -247,19 +247,47 @@
         fillVigilantPhoto()
 
         async function create() {
+
+
+
             const vigilantName = localStorage.getItem('username')
             const vigilantEmail = localStorage.getItem('email')
             const id = Math.ceil(Math.random() * 1000)
             const distance = document.getElementById("distance-create").value
             const workedHours = document.getElementById("worked-hours-create").value
 
-            if (distance && workedHours) {
+            const users = readUsers()
+
+            const getUserPhoto = users.map(user => {
+                if (user.email === vigilantEmail && user.vigilantPhoto) {
+                    return user.vigilantPhoto
+                }
+            })
+
+            const vigilantPhoto = getUserPhoto.filter(function (elem) {
+                return elem != null;
+            });
+
+            if (distance && workedHours && vigilantPhoto) {
                 const reportInfo = {
                     id,
                     distance,
                     workedHours,
                     vigilantName,
-                    vigilantEmail
+                    vigilantEmail,
+                    vigilantPhoto
+                }
+
+                const reports = getLocalStorage()
+                reports.push(reportInfo)
+                await setLocalStorage(reports)
+            } else if (distance && workedHours) {
+                const reportInfo = {
+                    id,
+                    distance,
+                    workedHours,
+                    vigilantName,
+                    vigilantEmail,
                 }
 
                 const reports = getLocalStorage()
@@ -268,9 +296,9 @@
             }
         }
 
-        const createCard = (report) => {
-            const newCard = document.createElement('tr')
-            newCard.innerHTML = `
+        const createRow = (report) => {
+            const newRow = document.createElement('tr')
+            newRow.innerHTML = `
             <td>${report.vigilantName}</td>
             <td></td>
             <td></td>
@@ -289,7 +317,7 @@
             </td>
             
             `
-            document.querySelector('#table-content').appendChild(newCard)
+            document.querySelector('#table-content').appendChild(newRow)
         }
 
         const listReports = async () => {
@@ -314,7 +342,7 @@
                     }
                 })
                 setLocalStorage(reports)
-                await removeNullElements.forEach(createCard)
+                await removeNullElements.forEach(createRow)
             }
         }
 
