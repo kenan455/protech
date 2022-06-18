@@ -174,7 +174,8 @@
                                 </div>
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-                                    <input type="submit" class="btn btn-danger" value="Deletar">
+                                    <input type="submit" class="btn btn-danger" value="Deletar"
+                                        onclick="deleteReport()">
                                 </div>
                             </form>
                         </div>
@@ -228,12 +229,11 @@
                 reports.push(reportInfo)
                 await setLocalStorage(reports)
 
-                listReports(id)
+                listReports()
             }
         }
 
         const createCard = (report) => {
-
             const newCard = document.createElement('tr')
             newCard.innerHTML = `
             <td>${report.vigilantName}</td>
@@ -245,7 +245,7 @@
             <td>
                <a href="#editEmployeeModal" class="edit" data-toggle="modal" onclick="editReport()"><i
                         id="getIdEdit" 
-                        class="material-icons" data-toggle="tooltip"
+                        class="material-icons ${report.id}" data-toggle="tooltip"
                         title="Edit">&#xE254;</i>
                 </a>
                 <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i
@@ -255,7 +255,6 @@
             
             `
             document.querySelector('#table-content').appendChild(newCard)
-            document.getElementById("getIdEdit").classList.add(report.id);
         }
 
         const listReports = async () => {
@@ -268,7 +267,7 @@
                 if (user.email === vigilantEmail && user.vigilantPhoto) {
                     const userPhoto = document.createElement('div')
                     userPhoto.innerHTML = `
-                       <img src="${user.vigilantPhoto}"/>
+                       <img src="${user.vigilantPhoto}" width="30px" height="30px"/>
                         
                     `
                     document.querySelector('#user-photo').appendChild(userPhoto)
@@ -340,12 +339,34 @@
                     return report
                 })
 
-
                 await setLocalStorage(report)
                 listReports()
             }
         }
 
+        const deleteReport = async () => {
+            const getIndex = document.getElementById("getIdEdit").className.split(' ')
+            const id = getIndex[getIndex.length - 1]
+
+            const reports = readReports()
+
+            const removeReport = reports.map(report => {
+                if (report.id == id) {
+                    reports.splice(id)
+                } else {
+                    return report
+                }
+
+            })
+
+            const filteredReports = removeReport.filter(function (elem) {
+                return elem != null;
+            });
+
+            await setLocalStorage(filteredReports)
+
+            document.location.reload()
+        }
 
         function logOut() {
             const notLoggedIn = false
