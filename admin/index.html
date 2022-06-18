@@ -66,7 +66,8 @@
         <div class="container pt-4">
 
             <div class="d-flex justify-content-center pb-2">
-                <input type="text" class="form-control w-100" placeholder="busca" id="inputBusca">
+                <input type="text" class="form-control w-100" placeholder="busca de vigilantes (por nome)"
+                    id="inputBusca">
                 <button onClick="handleSearch()" class="btn btn-primary ml-1">procurar</button>
             </div>
 
@@ -234,10 +235,11 @@
             }
         }
 
-        const createCard = (report) => {
+        const createRow = (report) => {
 
-            const newCard = document.createElement('tr')
-            newCard.innerHTML = `
+            const newRow = document.createElement('tr')
+            newRow.classList.add("reportsContainer")
+            newRow.innerHTML = `
             <td>${report.vigilantName}</td>
             <td></td>
             <td></td>
@@ -256,7 +258,7 @@
             </td>
             
             `
-            document.querySelector('#table-content').appendChild(newCard)
+            document.querySelector('#table-content').appendChild(newRow)
             document.getElementById("getIdEdit").classList.add(report.id);
         }
 
@@ -266,7 +268,7 @@
             console.log(reports)
 
             const removeNullElements = reports.filter(function (elem) {
-                if(elem.length != 1){
+                if (elem.length != 1) {
                     return elem
                 }
             });
@@ -274,7 +276,7 @@
             console.log(removeNullElements)
 
 
-            removeNullElements.forEach(createCard)
+            removeNullElements.forEach(createRow)
         }
 
         listReports()
@@ -328,6 +330,26 @@
                 await setLocalStorage(report)
                 listReports()
             }
+        }
+
+        function handleSearch() {
+            const searchValue = document.getElementById("inputBusca").value.toLowerCase();
+
+            if (searchValue === "") return;
+
+            clear()
+
+            const reports = readReports()
+            reports.forEach(report => {
+                if (report.vigilantName.toLowerCase() === searchValue) {
+                    createRow(report)
+                }
+            })
+        }
+
+        const clear = () => {
+            const row = document.querySelectorAll('.reportsContainer')
+            row.forEach(row => row.parentNode.removeChild(row))
         }
 
 
