@@ -106,20 +106,22 @@
 
             const users = readUser()
 
-            const loggedIn = false
-
             users.forEach(user => {
                 if (user.email === email && user.password === password && user.accountType === "administrador") {
                     const loggedIn = true
                     const accountType = user.accountType
                     localStorage.setItem("session", loggedIn)
                     localStorage.setItem("accountType", accountType)
+                    localStorage.setItem("username", user.name)
+                    localStorage.setItem("email", user.email)
+
                     return window.location.href = "index.html"
                 }
             })
 
+            const loggedIn = localStorage.getItem('session')
 
-            if (loggedIn === "false") {
+            if (loggedIn === "false" || loggedIn === null) {
                 const warning = document.createElement('div')
                 warning.classList.add("remove");
                 warning.innerHTML = `
