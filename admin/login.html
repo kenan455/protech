@@ -12,13 +12,25 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
+
+
+<style>
+    .titleNavbar {
+        font-size: 50px;
+    }
+</style>
 
 <body>
 
-    <section class="vh-100" style="background-color: #2779e2;">
-        <div class="container h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
+    <section>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <a class="navbar-brand titleNavbar" href="./login.html">ProTech</a>
+        </nav>
+
+        <div class="container h-200">
+            <div class="row d-flex justify-content-center align-items-center h-50">
                 <div class="col-xl-9">
 
                     <h1 class="text-white mb-4">Login Administradores</h1>
@@ -71,8 +83,7 @@
                             </div>
 
                             <div class="pt-2 text-center">
-                                <a type="submit" class="btn btn-primary btn-lg"
-                                    href="register.html">Registre-se</a>
+                                <a type="submit" class="btn btn-primary btn-lg" href="register.html">Registre-se</a>
                             </div>
 
                         </div>
@@ -95,7 +106,7 @@
 
             const users = readUser()
 
-
+            const loggedIn = false
 
             users.forEach(user => {
                 if (user.email === email && user.password === password && user.accountType === "administrador") {
@@ -109,6 +120,7 @@
 
 
             if (loggedIn === "false") {
+                console.log(loggedIn)
                 const warning = document.createElement('div')
                 warning.classList.add("remove");
                 warning.innerHTML = `

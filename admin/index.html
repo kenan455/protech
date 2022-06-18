@@ -21,6 +21,12 @@
 </head>
 
 <style>
+    body {
+        background-color: rgba(230, 232, 250, 0.35);
+        opacity: 1;
+    }
+
+
     .notLoggedIn {
         position: absolute;
         left: 50%;
@@ -29,11 +35,15 @@
         border: 1px solid #292b2c;
         padding: 10px;
     }
+
+    .navbarBackground {
+        background-color: rgba(255, 0, 0, 0.65);
+    }
 </style>
 
 <body>
     <div id="application">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark navbarBackground">
             <a class="navbar-brand" href="./index.html">ProTech</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -197,6 +207,7 @@
 
         const readReports = () => getLocalStorage()
 
+        const accountType = localStorage.getItem('accountType')
         const loggedIn = localStorage.getItem('session')
 
         if (loggedIn === "false" || accountType === "vigilante") {
@@ -220,8 +231,6 @@
                 const reports = getLocalStorage()
                 reports.push(reportInfo)
                 await setLocalStorage(reports)
-
-                listReports(id)
             }
         }
 
@@ -253,7 +262,19 @@
 
         const listReports = async () => {
             const reports = readReports()
-            reports.forEach(createCard)
+
+            console.log(reports)
+
+            const removeNullElements = reports.filter(function (elem) {
+                if(elem.length != 1){
+                    return elem
+                }
+            });
+
+            console.log(removeNullElements)
+
+
+            removeNullElements.forEach(createCard)
         }
 
         listReports()
