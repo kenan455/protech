@@ -83,7 +83,7 @@
                                         <h2><b>Relatórios</b></h2>
                                     </div>
                                     <div class="col-sm-6">
-                                        <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i
+                                        <a href="#addReportModal" class="btn btn-success" data-toggle="modal"><i
                                                 class="material-icons">&#xE147;</i> <span>Criar Relatório</span></a>
                                     </div>
                                 </div>
@@ -110,7 +110,7 @@
                     </div>
                 </div>
                 <!-- Add Modal HTML -->
-                <div id="addEmployeeModal" class="modal fade">
+                <div id="addReportModal" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <form>
@@ -322,7 +322,7 @@
 
             const editReport = (id) => {
                 document.getElementById("getIndex").classList.add(id);
-                
+
                 const reports = readReports()
 
                 const report = reports.map(report => {
