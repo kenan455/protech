@@ -92,7 +92,7 @@
                                 <thead>
                                     <tr>
                                         <th> </th>
-                                        <th >Vigilante</th>
+                                        <th>Vigilante</th>
                                         <th> </th>
                                         <th> </th>
                                         <th>Distância Percorrida(km)</th>
@@ -162,37 +162,12 @@
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
                                     <input type="submit" class="btn btn-info" value="Salvar" id="getIndex"
-                                        onclick="saveReport(event)">
+                                        onclick="saveReport()">
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
-                <!-- Delete Modal HTML -->
-                <div id="deleteEmployeeModal" class="modal fade">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form>
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Deletar Relatório</h4>
-                                    <button type="button" class="close" data-dismiss="modal"
-                                        aria-hidden="true">&times;</button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Tem certeza que deseja deletar?</p>
-                                    <p class="text-warning"><small>Essa ação não pode ser desfeita.</small></p>
-                                </div>
-                                <div class="modal-footer">
-                                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-                                    <input type="submit" class="btn btn-danger" value="Deletar"
-                                        onclick="deleteReport()">
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-
             </div>
         </div>
 
@@ -205,7 +180,7 @@
 
     </div>
     <script>
-         const loggedIn = localStorage.getItem('session')
+        const loggedIn = localStorage.getItem('session')
         const accountType = localStorage.getItem('accountType')
 
         if (loggedIn === "false" || loggedIn === null) {
@@ -219,34 +194,7 @@
         const readUsers = () => getUsers()
         const readReports = () => getLocalStorage()
 
-       /*  async function fillVigilantPhoto() {
-            const vigilantEmail = await localStorage.getItem('email')
-
-            const users = readUsers()
-
-            const getUserPhoto = users.map(user => {
-
-                if (user.email === vigilantEmail && user.vigilantPhoto) {
-                    const userPhoto = document.createElement('div')
-                    userPhoto.innerHTML = `
-                        <img src="${user.vigilantPhoto}" width="30px" height="30px"/>
-                            
-                    `
-                    document.querySelector('#user-photo').appendChild(userPhoto)
-
-                    const userName = document.createElement('div')
-                    userName.innerHTML = `
-                        ${user.name}
-                    `
-                    document.querySelector('#username-topbar').appendChild(userName)
-                }
-
-            })
-        }
-
-        fillVigilantPhoto() */
-
-        async function create() {
+        function create() {
             const vigilantName = localStorage.getItem('username')
             const vigilantEmail = localStorage.getItem('email')
             const id = Math.ceil(Math.random() * 1000)
@@ -264,7 +212,7 @@
 
                 const reports = getLocalStorage()
                 reports.push(reportInfo)
-                await setLocalStorage(reports)
+                setLocalStorage(reports)
             }
         }
 
@@ -279,12 +227,11 @@
             <td>${report.distance}/km</td>
             <td>${report.workedHours}/hrs</td>
             <td>
-               <a href="#editEmployeeModal" class="edit" data-toggle="modal" onclick="editReport()"><i
-                        id="getIdEdit" 
-                        class="material-icons ${report.id}" data-toggle="tooltip"
+               <a href="#editEmployeeModal" class="edit" data-toggle="modal" onclick="editReport(${report.id})"><i
+                        class="material-icons" data-toggle="tooltip"
                         title="Edit">&#xE254;</i>
                 </a>
-                <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i
+                <a class="delete" onclick="deleteReport(${report.id}"><i
                         class="material-icons" data-toggle="tooltip"
                         title="Delete">&#xE872;</i></a>
             </td>
@@ -293,8 +240,8 @@
             document.querySelector('#table-content').appendChild(newRow)
         }
 
-        const listReports = async () => {
-            const vigilantEmail = await localStorage.getItem('email')
+        const listReports = () => {
+            const vigilantEmail = localStorage.getItem('email')
             const reports = readReports()
 
             const removeNullElements = reports.filter(function (elem) {
@@ -309,15 +256,14 @@
                     }
                 })
                 setLocalStorage(reports)
-                await removeNullElements.forEach(createRow)
+                removeNullElements.forEach(createRow)
             }
         }
 
         listReports()
 
-        const editReport = async () => {
-            const getIndex = document.getElementById("getIdEdit").className.split(' ')
-            const id = getIndex[getIndex.length - 1]
+        const editReport = (id) => {
+            document.getElementById("getIndex").classList.add(id);
 
             const reports = readReports()
 
@@ -327,18 +273,16 @@
                 }
             })
 
-            await fillFields(id, report[0])
+            fillFields(id, report[0])
         }
 
         const fillFields = (id, report) => {
-            document.getElementById("getIndex").classList.add(id);
-
             const distance = document.getElementById("distance-edit").value = report.distance
             const workedHours = document.getElementById("worked-hours-edit").value = report.workedHours
         }
 
-        const saveReport = async () => {
-            const getIndex = document.getElementById("getIdEdit").className.split(' ')
+        const saveReport = () => {
+            const getIndex = document.getElementById("getIndex").className.split(' ')
             const id = getIndex[getIndex.length - 1]
 
             const distance = document.getElementById("distance-edit").value
@@ -360,15 +304,12 @@
                     return report
                 })
 
-                await setLocalStorage(report)
+                setLocalStorage(report)
                 listReports()
             }
         }
 
-        const deleteReport = async () => {
-            const getIndex = document.getElementById("getIdEdit").className.split(' ')
-            const id = getIndex[getIndex.length - 1]
-
+        const deleteReport = (id) => {
             const reports = readReports()
 
             const removeReport = reports.map(report => {
@@ -384,7 +325,7 @@
                 return elem != null;
             });
 
-            await setLocalStorage(filteredReports)
+            setLocalStorage(filteredReports)
 
             document.location.reload()
         }

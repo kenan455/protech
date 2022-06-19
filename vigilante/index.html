@@ -290,7 +290,6 @@
             
             `
                 document.querySelector('#table-content').appendChild(newRow)
-                document.getElementById("getIndex").classList.add(report.id);
             }
 
             const listReports = () => {
@@ -322,6 +321,8 @@
             listReports()
 
             const editReport = (id) => {
+                document.getElementById("getIndex").classList.add(id);
+                
                 const reports = readReports()
 
                 const report = reports.map(report => {
