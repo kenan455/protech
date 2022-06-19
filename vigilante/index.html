@@ -59,7 +59,7 @@
                 <span class="navbar-text mr-3 mb-1" id="username-topbar">
                 </span>
 
-                <span class="navbar-text mr-3" id="user-photo" onClick="logOut()">
+                <span class="navbar-text mr-3" id="user-photo">
                 </span>
 
 
@@ -183,6 +183,7 @@
             const accountType = localStorage.getItem('accountType')
 
             if (loggedIn === "false" || loggedIn === null) {
+                console.log("porra")
                 window.location.href = "login.html"
             }
 
@@ -193,8 +194,8 @@
             const readUsers = () => getUsers()
             const readReports = () => getLocalStorage()
 
-            async function fillVigilantPhoto() {
-                const vigilantEmail = await localStorage.getItem('email')
+            function fillVigilantPhoto() {
+                const vigilantEmail = localStorage.getItem('email')
 
                 const users = readUsers()
 
@@ -220,7 +221,7 @@
 
             fillVigilantPhoto()
 
-            async function create() {
+            function create() {
                 const vigilantName = localStorage.getItem('username')
                 const vigilantEmail = localStorage.getItem('email')
                 const id = Math.ceil(Math.random() * 1000)
@@ -251,7 +252,7 @@
 
                     const reports = getLocalStorage()
                     reports.push(reportInfo)
-                    await setLocalStorage(reports)
+                    setLocalStorage(reports)
                 } else if (distance && workedHours) {
                     const reportInfo = {
                         id,
@@ -263,11 +264,11 @@
 
                     const reports = getLocalStorage()
                     reports.push(reportInfo)
-                    await setLocalStorage(reports)
+                    setLocalStorage(reports)
                 }
             }
 
-            const createRow = async (report) => {
+            const createRow = (report) => {
                 const newRow = document.createElement('tr')
                 newRow.innerHTML = `
             <td>${report.vigilantName}</td>
@@ -288,12 +289,12 @@
             </td>
             
             `
-                await document.querySelector('#table-content').appendChild(newRow)
+                document.querySelector('#table-content').appendChild(newRow)
                 document.getElementById("getIndex").classList.add(report.id);
             }
 
-            const listReports = async () => {
-                const vigilantEmail = await localStorage.getItem('email')
+            const listReports = () => {
+                const vigilantEmail = localStorage.getItem('email')
                 const reports = readReports()
 
                 const filteredUserReports = reports.map(report => {
@@ -314,13 +315,13 @@
                         }
                     })
                     setLocalStorage(reports)
-                    await removeNullElements.forEach(createRow)
+                    removeNullElements.forEach(createRow)
                 }
             }
 
             listReports()
 
-            const editReport = async (id) => {
+            const editReport = (id) => {
                 const reports = readReports()
 
                 const report = reports.map(report => {
@@ -333,7 +334,7 @@
                     return report !== undefined
                 })
 
-                await fillFields(id, filteredReport)
+                fillFields(id, filteredReport)
             }
 
             const fillFields = (id, report) => {
@@ -341,7 +342,7 @@
                 const workedHours = document.getElementById("worked-hours-edit").value = report.workedHours
             }
 
-            const saveReport = async () => {
+            const saveReport = () => {
                 const getIndex = document.getElementById("getIndex").className.split(' ')
                 const id = getIndex[getIndex.length - 1]
 
@@ -364,7 +365,7 @@
                         return report
                     })
 
-                    await setLocalStorage(report)
+                    setLocalStorage(report)
                     listReports()
                 }
             }
@@ -385,7 +386,7 @@
                     return elem != null;
                 });
 
-                await setLocalStorage(filteredReports)
+                setLocalStorage(filteredReports)
                 document.location.reload()
             }
 
