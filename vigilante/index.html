@@ -162,143 +162,114 @@
                                 <div class="modal-footer">
                                     <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
                                     <input type="submit" class="btn btn-info" value="Salvar" id="getIndex"
-                                        onclick="saveReport(event)">
+                                        onclick="saveReport()">
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
-                <!-- Delete Modal HTML -->
-                <div id="deleteEmployeeModal" class="modal fade">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form>
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Deletar Relatório</h4>
-                                    <button type="button" class="close" data-dismiss="modal"
-                                        aria-hidden="true">&times;</button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Tem certeza que deseja deletar?</p>
-                                    <p class="text-warning"><small>Essa ação não pode ser desfeita.</small></p>
-                                </div>
-                                <div class="modal-footer">
-                                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar">
-                                    <input type="submit" class="btn btn-danger" value="Deletar"
-                                        onclick="deleteReport()">
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-
             </div>
+
+
+            <footer class="page-footer font-small blue position">
+                <div class="footer-copyright text-center py-">© 2022 Copyright:
+                    <a href="#">Protech</a>
+                </div>
+            </footer>
+
         </div>
+        <script>
+            const loggedIn = localStorage.getItem('session')
+            const accountType = localStorage.getItem('accountType')
 
+            if (loggedIn === "false" || loggedIn === null) {
+                window.location.href = "login.html"
+            }
 
-        <footer class="page-footer font-small blue position">
-            <div class="footer-copyright text-center py-">© 2022 Copyright:
-                <a href="#">Protech</a>
-            </div>
-        </footer>
+            const getUsers = () => JSON.parse(localStorage.getItem('users')) ?? []
+            const getLocalStorage = () => JSON.parse(localStorage.getItem('reports')) ?? []
+            const setLocalStorage = (reports) => localStorage.setItem("reports", JSON.stringify(reports))
 
-    </div>
-    <script>
-        const loggedIn = localStorage.getItem('session')
-        const accountType = localStorage.getItem('accountType')
+            const readUsers = () => getUsers()
+            const readReports = () => getLocalStorage()
 
-        if (loggedIn === "false" || loggedIn === null) {
-            window.location.href = "login.html"
-        }
+            async function fillVigilantPhoto() {
+                const vigilantEmail = await localStorage.getItem('email')
 
-        const getUsers = () => JSON.parse(localStorage.getItem('users')) ?? []
-        const getLocalStorage = () => JSON.parse(localStorage.getItem('reports')) ?? []
-        const setLocalStorage = (reports) => localStorage.setItem("reports", JSON.stringify(reports))
+                const users = readUsers()
 
-        const readUsers = () => getUsers()
-        const readReports = () => getLocalStorage()
+                const getUserPhoto = users.forEach(user => {
 
-        async function fillVigilantPhoto() {
-            const vigilantEmail = await localStorage.getItem('email')
-
-            const users = readUsers()
-
-            const getUserPhoto = users.forEach(user => {
-
-                if (user.email === vigilantEmail && user.vigilantPhoto) {
-                    const userPhoto = document.createElement('div')
-                    userPhoto.innerHTML = `
+                    if (user.email === vigilantEmail && user.vigilantPhoto) {
+                        const userPhoto = document.createElement('div')
+                        userPhoto.innerHTML = `
                         <img src="${user.vigilantPhoto}" width="30px" height="30px"/>
                             
                     `
-                    document.querySelector('#user-photo').appendChild(userPhoto)
+                        document.querySelector('#user-photo').appendChild(userPhoto)
 
-                    const userName = document.createElement('div')
-                    userName.innerHTML = `
+                        const userName = document.createElement('div')
+                        userName.innerHTML = `
                         ${user.name}
                     `
-                    document.querySelector('#username-topbar').appendChild(userName)
-                }
+                        document.querySelector('#username-topbar').appendChild(userName)
+                    }
 
-            })
-        }
-
-        fillVigilantPhoto()
-
-        async function create() {
-
-
-
-            const vigilantName = localStorage.getItem('username')
-            const vigilantEmail = localStorage.getItem('email')
-            const id = Math.ceil(Math.random() * 1000)
-            const distance = document.getElementById("distance-create").value
-            const workedHours = document.getElementById("worked-hours-create").value
-
-            const users = readUsers()
-
-            const getUserPhoto = users.map(user => {
-                if (user.email === vigilantEmail && user.vigilantPhoto) {
-                    return user.vigilantPhoto
-                }
-            })
-
-            const vigilantPhoto = getUserPhoto.filter(function (elem) {
-                return elem != null;
-            });
-
-            if (distance && workedHours && vigilantPhoto) {
-                const reportInfo = {
-                    id,
-                    distance,
-                    workedHours,
-                    vigilantName,
-                    vigilantEmail,
-                    vigilantPhoto
-                }
-
-                const reports = getLocalStorage()
-                reports.push(reportInfo)
-                await setLocalStorage(reports)
-            } else if (distance && workedHours) {
-                const reportInfo = {
-                    id,
-                    distance,
-                    workedHours,
-                    vigilantName,
-                    vigilantEmail,
-                }
-
-                const reports = getLocalStorage()
-                reports.push(reportInfo)
-                await setLocalStorage(reports)
+                })
             }
-        }
 
-        const createRow = (report) => {
-            const newRow = document.createElement('tr')
-            newRow.innerHTML = `
+            fillVigilantPhoto()
+
+            async function create() {
+                const vigilantName = localStorage.getItem('username')
+                const vigilantEmail = localStorage.getItem('email')
+                const id = Math.ceil(Math.random() * 1000)
+                const distance = document.getElementById("distance-create").value
+                const workedHours = document.getElementById("worked-hours-create").value
+
+                const users = readUsers()
+
+                const getUserPhoto = users.map(user => {
+                    if (user.email === vigilantEmail && user.vigilantPhoto) {
+                        return user.vigilantPhoto
+                    }
+                })
+
+                const vigilantPhoto = getUserPhoto.filter(function (elem) {
+                    return elem != null;
+                });
+
+                if (distance && workedHours && vigilantPhoto) {
+                    const reportInfo = {
+                        id,
+                        distance,
+                        workedHours,
+                        vigilantName,
+                        vigilantEmail,
+                        vigilantPhoto
+                    }
+
+                    const reports = getLocalStorage()
+                    reports.push(reportInfo)
+                    await setLocalStorage(reports)
+                } else if (distance && workedHours) {
+                    const reportInfo = {
+                        id,
+                        distance,
+                        workedHours,
+                        vigilantName,
+                        vigilantEmail,
+                    }
+
+                    const reports = getLocalStorage()
+                    reports.push(reportInfo)
+                    await setLocalStorage(reports)
+                }
+            }
+
+            const createRow = async (report) => {
+                const newRow = document.createElement('tr')
+                newRow.innerHTML = `
             <td>${report.vigilantName}</td>
             <td></td>
             <td></td>
@@ -306,156 +277,152 @@
             <td>${report.distance}/km</td>
             <td>${report.workedHours}/hrs</td>
             <td>
-               <a href="#editEmployeeModal" class="edit" data-toggle="modal" onclick="editReport()"><i
-                        id="getIdEdit" 
-                        class="material-icons ${report.id}" data-toggle="tooltip"
+               <a href="#editEmployeeModal" class="edit" data-toggle="modal" onclick="editReport(${report.id})"><i
+                        
+                        class="material-icons" data-toggle="tooltip"
                         title="Edit">&#xE254;</i>
                 </a>
-                <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i
+                <a class="delete" onClick="deleteReport(${report.id})"><i
                         class="material-icons" data-toggle="tooltip"
                         title="Delete">&#xE872;</i></a>
             </td>
             
             `
-            document.querySelector('#table-content').appendChild(newRow)
-        }
+                await document.querySelector('#table-content').appendChild(newRow)
+                document.getElementById("getIndex").classList.add(report.id);
+            }
 
-        const listReports = async () => {
-            const vigilantEmail = await localStorage.getItem('email')
-            const reports = readReports()
+            const listReports = async () => {
+                const vigilantEmail = await localStorage.getItem('email')
+                const reports = readReports()
 
-            const filteredUserReports = reports.map(report => {
-                if (report.vigilantEmail === vigilantEmail) {
-                    return report
-                }
-            })
-
-            const removeNullElements = filteredUserReports.filter(function (elem) {
-                return elem != null;
-            });
-
-
-            if (removeNullElements != null) {
-                removeNullElements.forEach(function (elem) {
-                    if (!(removeNullElements.includes(elem, 0))) {
-                        reports.push(elem)
+                const filteredUserReports = reports.map(report => {
+                    if (report.vigilantEmail === vigilantEmail) {
+                        return report
                     }
                 })
-                setLocalStorage(reports)
-                await removeNullElements.forEach(createRow)
+
+                const removeNullElements = filteredUserReports.filter(function (elem) {
+                    return elem != null;
+                });
+
+
+                if (removeNullElements != null) {
+                    removeNullElements.forEach(function (elem) {
+                        if (!(removeNullElements.includes(elem, 0))) {
+                            reports.push(elem)
+                        }
+                    })
+                    setLocalStorage(reports)
+                    await removeNullElements.forEach(createRow)
+                }
             }
-        }
 
-        listReports()
+            listReports()
 
-        const editReport = async () => {
-            const getIndex = document.getElementById("getIdEdit").className.split(' ')
-            const id = getIndex[getIndex.length - 1]
-
-            const reports = readReports()
-
-            const report = reports.map(report => {
-                if (report.id == id) {
-                    return report
-                }
-            })
-
-            await fillFields(id, report[0])
-        }
-
-        const fillFields = (id, report) => {
-            document.getElementById("getIndex").classList.add(id);
-
-            const distance = document.getElementById("distance-edit").value = report.distance
-            const workedHours = document.getElementById("worked-hours-edit").value = report.workedHours
-        }
-
-        const saveReport = async () => {
-            const getIndex = document.getElementById("getIdEdit").className.split(' ')
-            const id = getIndex[getIndex.length - 1]
-
-            const distance = document.getElementById("distance-edit").value
-            const workedHours = document.getElementById("worked-hours-edit").value
-
-            if (distance && workedHours) {
-                const reportInfoEdit = {
-                    distance,
-                    workedHours,
-                }
-
+            const editReport = async (id) => {
                 const reports = readReports()
 
                 const report = reports.map(report => {
                     if (report.id == id) {
-                        report.distance = reportInfoEdit.distance
-                        report.workedHours = reportInfoEdit.workedHours
+                        return report
                     }
-                    return report
                 })
 
-                await setLocalStorage(report)
-                listReports()
+                const [filteredReport] = report.filter(report => {
+                    return report !== undefined
+                })
+
+                await fillFields(id, filteredReport)
             }
-        }
 
-        const deleteReport = async () => {
-            const getIndex = document.getElementById("getIdEdit").className.split(' ')
-            const id = getIndex[getIndex.length - 1]
+            const fillFields = (id, report) => {
+                const distance = document.getElementById("distance-edit").value = report.distance
+                const workedHours = document.getElementById("worked-hours-edit").value = report.workedHours
+            }
 
-            const reports = readReports()
+            const saveReport = async () => {
+                const getIndex = document.getElementById("getIndex").className.split(' ')
+                const id = getIndex[getIndex.length - 1]
 
-            const removeReport = reports.map(report => {
-                if (report.id == id) {
-                    reports.splice(id)
-                } else {
-                    return report
+                const distance = document.getElementById("distance-edit").value
+                const workedHours = document.getElementById("worked-hours-edit").value
+
+                if (distance && workedHours) {
+                    const reportInfoEdit = {
+                        distance,
+                        workedHours,
+                    }
+
+                    const reports = readReports()
+
+                    const report = reports.map(report => {
+                        if (report.id == id) {
+                            report.distance = reportInfoEdit.distance
+                            report.workedHours = reportInfoEdit.workedHours
+                        }
+                        return report
+                    })
+
+                    await setLocalStorage(report)
+                    listReports()
                 }
+            }
 
-            })
+            function deleteReport(id) {
+                const reports = readReports()
 
-            const filteredReports = removeReport.filter(function (elem) {
-                return elem != null;
+                const removeReport = reports.map(report => {
+                    if (report.id == id) {
+                        reports.splice(id)
+                    } else {
+                        return report
+                    }
+
+                })
+
+                const filteredReports = removeReport.filter(function (elem) {
+                    return elem != null;
+                });
+
+                await setLocalStorage(filteredReports)
+                document.location.reload()
+            }
+
+            function logOut() {
+                const notLoggedIn = false
+                localStorage.setItem("session", notLoggedIn)
+
+                window.location.href = "login.html"
+            }
+
+        </script>
+
+        <script>
+            $(document).ready(function () {
+                // Activate tooltip
+                $('[data-toggle="tooltip"]').tooltip();
+
+                // Select/Deselect checkboxes
+                var checkbox = $('table tbody input[type="checkbox"]');
+                $("#selectAll").click(function () {
+                    if (this.checked) {
+                        checkbox.each(function () {
+                            this.checked = true;
+                        });
+                    } else {
+                        checkbox.each(function () {
+                            this.checked = false;
+                        });
+                    }
+                });
+                checkbox.click(function () {
+                    if (!this.checked) {
+                        $("#selectAll").prop("checked", false);
+                    }
+                });
             });
-
-            await setLocalStorage(filteredReports)
-
-            document.location.reload()
-        }
-
-        function logOut() {
-            const notLoggedIn = false
-            localStorage.setItem("session", notLoggedIn)
-
-            window.location.href = "login.html"
-        }
-
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            // Activate tooltip
-            $('[data-toggle="tooltip"]').tooltip();
-
-            // Select/Deselect checkboxes
-            var checkbox = $('table tbody input[type="checkbox"]');
-            $("#selectAll").click(function () {
-                if (this.checked) {
-                    checkbox.each(function () {
-                        this.checked = true;
-                    });
-                } else {
-                    checkbox.each(function () {
-                        this.checked = false;
-                    });
-                }
-            });
-            checkbox.click(function () {
-                if (!this.checked) {
-                    $("#selectAll").prop("checked", false);
-                }
-            });
-        });
-    </script>
+        </script>
 </body>
 
 </html>
