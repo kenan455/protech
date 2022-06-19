@@ -126,7 +126,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Horas Trabalhadas</label>
-                                        <input type="time" class="form-control" id="worked-hours-create" required>
+                                        <input type="number" class="form-control" id="worked-hours-create" required>
                                     </div>
 
                                 </div>
@@ -155,7 +155,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Horas Trabalhadas</label>
-                                        <input type="time" class="form-control" id="worked-hours-edit" required>
+                                        <input type="number" class="form-control" id="worked-hours-edit" required>
                                     </div>
 
                                 </div>
@@ -183,7 +183,6 @@
             const accountType = localStorage.getItem('accountType')
 
             if (loggedIn === "false" || loggedIn === null) {
-                console.log("porra")
                 window.location.href = "login.html"
             }
 
